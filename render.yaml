@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ai-wanderer
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python rapidapi_proxy.py
+    healthCheckPath: /api/tripadvisor/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: RAPIDAPI_KEY
+        sync: false
+      - key: RAPIDAPI_TRIPADVISOR_HOST
+        value: tripadvisor-com1.p.rapidapi.com
+      - key: RAPIDAPI_TIMEOUT
+        value: "12"
