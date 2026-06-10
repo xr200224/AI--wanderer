@@ -180,3 +180,7 @@ exports.handler = async (event) => {
     });
   }
 };
+
+module.exports.tripadvisorSearch = tripadvisorSearch;
+module.exports.tripadvisorReviews = tripadvisorReviews;
+module.exports.tripadvisorDestination = tripadvisorDestination;
