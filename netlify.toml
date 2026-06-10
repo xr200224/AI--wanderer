@@ -7,8 +7,28 @@
   node_bundler = "esbuild"
 
 [[redirects]]
-  from = "/api/tripadvisor/:endpoint"
-  to = "/.netlify/functions/tripadvisor?endpoint=:endpoint"
+  from = "/api/tripadvisor/health"
+  to = "/.netlify/functions/tripadvisor?endpoint=health"
+  status = 200
+
+[[redirects]]
+  from = "/api/tripadvisor/search"
+  to = "/.netlify/functions/tripadvisor?endpoint=search"
+  status = 200
+
+[[redirects]]
+  from = "/api/tripadvisor/reviews"
+  to = "/.netlify/functions/tripadvisor?endpoint=reviews"
+  status = 200
+
+[[redirects]]
+  from = "/api/tripadvisor/hotels"
+  to = "/.netlify/functions/tripadvisor?endpoint=hotels"
+  status = 200
+
+[[redirects]]
+  from = "/api/tripadvisor/destination"
+  to = "/.netlify/functions/tripadvisor?endpoint=destination"
   status = 200
 
 [[redirects]]
