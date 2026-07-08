@@ -1,5 +1,5 @@
 [build]
-  command = "mkdir -p public && cp index.html public/index.html"
+  command = "rm -rf public && mkdir -p public && cp index.html public/index.html && cp -R assets public/assets"
   publish = "public"
   functions = "netlify/functions"
 
