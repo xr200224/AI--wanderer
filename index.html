@@ -6835,6 +6835,12 @@ body.trip-overview-mode #ai-input-inner {
 .trip-hero-carousel > .trip-hero-card {
   min-width: 0;
 }
+.trip-hero-carousel.is-single > .trip-hero-card {
+  flex-basis: 100% !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 @media (min-width: 431px) {
   .trip-hero-carousel {
     width: 100% !important;
@@ -6888,6 +6894,8 @@ body.trip-overview-mode.trip-home-locked {
   --trip-home-nav-y: 670;
   --trip-home-scale: 1;
   --trip-home-stage-top: 0px;
+  --trip-home-map-shift: 0px;
+  --trip-home-map-stretch: 0px;
   --trip-home-nav-top: 670px;
   --trip-home-nav-bottom: calc(env(safe-area-inset-bottom) + 18px);
 }
@@ -7021,12 +7029,12 @@ body.trip-overview-mode.trip-home-locked .tag-row span {
   border-radius: 5px !important;
 }
 body.trip-overview-mode.trip-home-locked .map-section {
-  margin: 16px 0 0 !important;
+  margin: calc(16px + var(--trip-home-map-shift)) 0 0 !important;
 }
 body.trip-overview-mode.trip-home-locked .trip-map-card {
-  height: 172px !important;
-  min-height: 172px !important;
-  max-height: 172px !important;
+  height: calc(172px + var(--trip-home-map-stretch)) !important;
+  min-height: calc(172px + var(--trip-home-map-stretch)) !important;
+  max-height: calc(172px + var(--trip-home-map-stretch)) !important;
   margin-top: 8px !important;
   border-radius: 8px !important;
   container-type: size;
@@ -9029,10 +9037,21 @@ function syncLockedTripHomeLayout() {
   const viewportWidth = Math.max(320, Math.round(viewport?.width || window.innerWidth || refWidth));
   const viewportHeight = Math.max(568, Math.round(viewport?.height || window.innerHeight || refHeight));
   const scale = Math.min(1, viewportWidth / refWidth, viewportHeight / refHeight);
-  const stageTop = Math.max(0, Math.round((viewportHeight - (refHeight * scale)) / 2));
+  const remainingHeight = viewportHeight - (refHeight * scale);
+  const stageTop = remainingHeight > 0 ? Math.min(16, Math.round(remainingHeight * 0.12)) : 0;
+  const navHeight = 56 * scale;
+  const navBottom = 18;
+  const navTop = viewportHeight - navBottom - navHeight;
+  const canvasBottom = stageTop + (refHeight * scale);
+  const bottomGap = navTop - canvasBottom;
+  const normalizedGap = bottomGap > 18 ? (bottomGap - 18) / Math.max(scale, 0.88) : 0;
+  const mapShift = normalizedGap > 0 ? Math.min(64, Math.round(normalizedGap * 0.72)) : 0;
+  const mapStretch = normalizedGap > 0 ? Math.min(24, Math.round(normalizedGap * 0.2)) : 0;
 
   body.style.setProperty('--trip-home-scale', scale.toFixed(6));
   body.style.setProperty('--trip-home-stage-top', `${stageTop}px`);
+  body.style.setProperty('--trip-home-map-shift', `${mapShift}px`);
+  body.style.setProperty('--trip-home-map-stretch', `${mapStretch}px`);
 }
 
 function bindLockedTripHomeLayout() {
