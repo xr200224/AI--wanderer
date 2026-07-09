@@ -7029,7 +7029,7 @@ body.trip-overview-mode.trip-home-locked .tag-row span {
   border-radius: 5px !important;
 }
 body.trip-overview-mode.trip-home-locked .map-section {
-  margin: calc(16px + var(--trip-home-map-shift)) 0 0 !important;
+  margin: 16px 0 0 !important;
 }
 body.trip-overview-mode.trip-home-locked .trip-map-card {
   height: calc(172px + var(--trip-home-map-stretch)) !important;
@@ -9025,32 +9025,49 @@ function syncLockedTripHomeLayout() {
     body?.classList.remove('trip-shell-locked', 'trip-home-locked');
     return;
   }
+  const clearHomeLockVars = () => {
+    body.style.removeProperty('--trip-home-scale');
+    body.style.removeProperty('--trip-home-stage-top');
+    body.style.removeProperty('--trip-home-map-shift');
+    body.style.removeProperty('--trip-home-map-stretch');
+  };
   const activeTab = body.dataset.activeTab || currentTab || 'chat';
-  const shouldLockHome = activeTab === 'chat';
-  body.classList.add('trip-shell-locked');
+  const viewport = window.visualViewport;
+  const viewportWidth = Math.max(
+    320,
+    Math.round(Math.max(viewport?.width || 0, window.innerWidth || 0, document.documentElement?.clientWidth || 0, 413))
+  );
+  const useResponsiveHome = activeTab === 'chat' && viewportWidth <= 430;
+  const shouldLockHome = activeTab === 'chat' && !useResponsiveHome;
+
+  body.classList.toggle('trip-shell-locked', !useResponsiveHome);
   body.classList.toggle('trip-home-locked', shouldLockHome);
+  if (useResponsiveHome) {
+    clearHomeLockVars();
+    return;
+  }
   if (!shouldLockHome) return;
 
   const refWidth = 413;
   const refHeight = 744;
-  const viewport = window.visualViewport;
-  const viewportWidth = Math.max(320, Math.round(viewport?.width || window.innerWidth || refWidth));
-  const viewportHeight = Math.max(568, Math.round(viewport?.height || window.innerHeight || refHeight));
+  const viewportHeight = Math.max(
+    568,
+    Math.round(Math.max(viewport?.height || 0, window.innerHeight || 0, document.documentElement?.clientHeight || 0, refHeight))
+  );
   const scale = Math.min(1, viewportWidth / refWidth, viewportHeight / refHeight);
   const remainingHeight = viewportHeight - (refHeight * scale);
   const stageTop = remainingHeight > 0 ? Math.min(16, Math.round(remainingHeight * 0.12)) : 0;
   const navHeight = 56 * scale;
   const navBottom = 18;
   const navTop = viewportHeight - navBottom - navHeight;
-  const canvasBottom = stageTop + (refHeight * scale);
-  const bottomGap = navTop - canvasBottom;
-  const normalizedGap = bottomGap > 18 ? (bottomGap - 18) / Math.max(scale, 0.88) : 0;
-  const mapShift = normalizedGap > 0 ? Math.min(64, Math.round(normalizedGap * 0.72)) : 0;
-  const mapStretch = normalizedGap > 0 ? Math.min(24, Math.round(normalizedGap * 0.2)) : 0;
+  const mapCardTop = stageTop + (490 * scale);
+  const desiredGap = Math.max(14, 16 * scale);
+  const targetHeight = Math.max(172, Math.round((navTop - desiredGap - mapCardTop) / Math.max(scale, 0.01)));
+  const mapStretch = Math.max(0, Math.min(180, targetHeight - 172));
 
   body.style.setProperty('--trip-home-scale', scale.toFixed(6));
   body.style.setProperty('--trip-home-stage-top', `${stageTop}px`);
-  body.style.setProperty('--trip-home-map-shift', `${mapShift}px`);
+  body.style.setProperty('--trip-home-map-shift', '0px');
   body.style.setProperty('--trip-home-map-stretch', `${mapStretch}px`);
 }
 
