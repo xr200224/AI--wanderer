@@ -11,6 +11,7 @@
 
 <style>
 :root {
+  --app-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
   --brand-1:#7B61FF; --brand-2:#5B8DEF;          /* 通义 主グラデ */
   --brand-grad: linear-gradient(135deg,#7B61FF,#5B8DEF);
   --accent-warm:#FF7A3D;                          /* 出行平台 サブアクセント */
@@ -23,8 +24,15 @@
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
   height: 100%; margin: 0; padding: 0; overflow: hidden;
-  font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-family: var(--app-font-sans);
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   background: var(--bg);
+}
+button, input, textarea, select {
+  font: inherit;
 }
 
 /* ── 地图（内嵌在行程方案内，非全屏背景） ── */
@@ -5730,9 +5738,9 @@ body.trip-overview-mode #ai-input-inner {
     margin: 16px 0 0 !important;
   }
   .trip-map-card {
-    height: 172px !important;
-    min-height: 172px !important;
-    max-height: 172px !important;
+    height: var(--trip-home-map-height, 172px) !important;
+    min-height: var(--trip-home-map-height, 172px) !important;
+    max-height: var(--trip-home-map-height, 172px) !important;
     margin-top: 8px !important;
     border-radius: 8px !important;
     container-type: size;
@@ -5813,6 +5821,7 @@ body.trip-overview-mode #ai-input-inner {
     right: auto !important;
     width: var(--trip-fixed-w) !important;
     bottom: calc(env(safe-area-inset-bottom) + 18px) !important;
+    height: var(--trip-nav-h) !important;
     transform: translateX(-50%) !important;
     container-type: inline-size;
   }
@@ -5850,7 +5859,7 @@ body.trip-overview-mode #ai-input-inner {
   body.trip-overview-mode {
     --trip-fixed-w: min(413px, calc(100vw - 20px));
     --trip-nav-bottom: 18px;
-    --trip-nav-h: 56px;
+    --trip-nav-h: 51px;
     --trip-map-nav-gap: 14px;
     --trip-canvas-w: var(--trip-fixed-w);
   }
@@ -5905,9 +5914,9 @@ body.trip-overview-mode #ai-input-inner {
     margin: 16px 0 0 !important;
   }
   .trip-map-card {
-    height: 172px !important;
-    min-height: 172px !important;
-    max-height: 172px !important;
+    height: var(--trip-home-map-height, 172px) !important;
+    min-height: var(--trip-home-map-height, 172px) !important;
+    max-height: var(--trip-home-map-height, 172px) !important;
     margin-top: 8px !important;
     border-radius: 8px !important;
     container-type: size;
@@ -5917,9 +5926,21 @@ body.trip-overview-mode #ai-input-inner {
     right: auto !important;
     width: var(--trip-fixed-w) !important;
     bottom: calc(env(safe-area-inset-bottom) + 18px) !important;
+    height: var(--trip-nav-h) !important;
     transform: translateX(-50%) !important;
     container-type: inline-size;
   }
+}
+
+body.trip-overview-mode .trip-tabbar {
+  box-sizing: border-box;
+  height: var(--trip-nav-h) !important;
+  min-height: var(--trip-nav-h) !important;
+  contain: layout paint;
+}
+body.trip-overview-mode .trip-nav-item:active,
+body.trip-overview-mode .trip-fab:active {
+  transform: none;
 }
 
 /* Keep the shared bottom controls centered after switching into planner mode. */
@@ -6896,6 +6917,7 @@ body.trip-overview-mode.trip-home-locked {
   --trip-home-stage-top: 0px;
   --trip-home-map-shift: 0px;
   --trip-home-map-stretch: 0px;
+  --trip-home-map-height: calc(172px + var(--trip-home-map-stretch));
   --trip-home-nav-top: 670px;
   --trip-home-nav-bottom: calc(env(safe-area-inset-bottom) + 18px);
 }
@@ -7032,9 +7054,9 @@ body.trip-overview-mode.trip-home-locked .map-section {
   margin: 16px 0 0 !important;
 }
 body.trip-overview-mode.trip-home-locked .trip-map-card {
-  height: calc(172px + var(--trip-home-map-stretch)) !important;
-  min-height: calc(172px + var(--trip-home-map-stretch)) !important;
-  max-height: calc(172px + var(--trip-home-map-stretch)) !important;
+  height: var(--trip-home-map-height) !important;
+  min-height: var(--trip-home-map-height) !important;
+  max-height: var(--trip-home-map-height) !important;
   margin-top: 8px !important;
   border-radius: 8px !important;
   container-type: size;
@@ -7144,6 +7166,568 @@ body.trip-overview-mode.trip-home-locked .trip-fab {
 body.trip-overview-mode.trip-home-locked .trip-fab b {
   font-size: 29px !important;
 }
+
+/* Final stable contract for the shared bottom navigation and home map spacing. */
+body.trip-overview-mode {
+  --trip-fixed-w: min(413px, calc(100vw - 20px));
+  --trip-nav-w: min(413px, calc(100vw - 20px));
+  --trip-nav-h: 56px;
+  --trip-nav-bottom: 18px;
+  --trip-map-nav-gap: 14px;
+  --planner-nav-reserve: calc(var(--trip-nav-h) + var(--trip-nav-bottom) + env(safe-area-inset-bottom) + var(--trip-map-nav-gap));
+}
+body.trip-overview-mode #ai-input-wrap,
+body.trip-overview-mode.trip-shell-locked #ai-input-wrap,
+body.trip-overview-mode.trip-home-locked #ai-input-wrap,
+body.trip-overview-mode[data-active-tab="planner"] #ai-input-wrap {
+  position: fixed !important;
+  z-index: 1200 !important;
+  left: 50% !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: calc(env(safe-area-inset-bottom) + var(--trip-nav-bottom)) !important;
+  width: var(--trip-nav-w) !important;
+  max-width: var(--trip-nav-w) !important;
+  height: var(--trip-nav-h) !important;
+  min-height: var(--trip-nav-h) !important;
+  max-height: var(--trip-nav-h) !important;
+  padding: 0 !important;
+  transform: translateX(-50%) !important;
+  transform-origin: center bottom !important;
+  pointer-events: none !important;
+  container-type: inline-size !important;
+  contain: layout style !important;
+}
+body.trip-overview-mode .trip-tabbar,
+body.trip-overview-mode.trip-shell-locked .trip-tabbar,
+body.trip-overview-mode.trip-home-locked .trip-tabbar {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: var(--trip-nav-h) !important;
+  min-height: var(--trip-nav-h) !important;
+  max-height: var(--trip-nav-h) !important;
+  border-radius: 999px !important;
+  padding: 5px 12px !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+  transition: none !important;
+  pointer-events: auto !important;
+}
+body.trip-overview-mode .trip-nav-item,
+body.trip-overview-mode.trip-home-locked .trip-nav-item {
+  height: 46px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  gap: 2px !important;
+  font-size: 10px !important;
+  line-height: 1.05 !important;
+  transform: none !important;
+  transition: color .15s ease !important;
+}
+body.trip-overview-mode .trip-nav-item svg,
+body.trip-overview-mode.trip-home-locked .trip-nav-item svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+body.trip-overview-mode .nav-yen-mark,
+body.trip-overview-mode.trip-home-locked .nav-yen-mark {
+  width: 19px !important;
+  height: 19px !important;
+  border-radius: 4px !important;
+  font-size: 10px !important;
+}
+body.trip-overview-mode .trip-fab,
+body.trip-overview-mode.trip-home-locked .trip-fab {
+  width: 43px !important;
+  height: 43px !important;
+  min-width: 43px !important;
+  min-height: 43px !important;
+  max-width: 43px !important;
+  max-height: 43px !important;
+  padding: 4px 7px 6px !important;
+  transform: none !important;
+  transition: background-color .15s ease, color .15s ease !important;
+  box-shadow: 0 9px 18px rgba(0,0,0,0.30) !important;
+}
+body.trip-overview-mode .trip-fab b,
+body.trip-overview-mode.trip-home-locked .trip-fab b {
+  font-size: 29px !important;
+}
+body.trip-overview-mode .trip-fab.active {
+  box-shadow: 0 9px 18px rgba(0,0,0,0.30) !important;
+}
+body.trip-overview-mode .trip-nav-item:active,
+body.trip-overview-mode .trip-fab:active {
+  transform: none !important;
+}
+body.trip-overview-mode .trip-map-card {
+  height: var(--trip-home-map-height, 172px) !important;
+  min-height: var(--trip-home-map-height, 172px) !important;
+  max-height: var(--trip-home-map-height, 172px) !important;
+}
+body.trip-overview-mode #chat-panel.trip-home-panel .map-section,
+body.trip-overview-mode.trip-home-locked #chat-panel.trip-home-panel .map-section {
+  transform: translateY(var(--trip-home-map-shift, 0px)) !important;
+  transition: none !important;
+}
+body.trip-overview-mode.trip-home-map-tight .home-route-bubble:not(.center) {
+  display: none !important;
+}
+body.trip-overview-mode.trip-home-map-tight .home-route-bubble.center {
+  top: 22% !important;
+}
+body.trip-overview-mode.trip-home-map-tight .home-route-cta {
+  bottom: 6px !important;
+}
+
+/* Responsive home layout: no fixed-canvas scaling, no clipping, calmer cards. */
+body.trip-overview-mode {
+  --trip-home-w: min(430px, calc(100vw - 20px));
+  --trip-home-pad-x: clamp(10px, 3vw, 14px);
+  --trip-home-bottom-reserve: calc(var(--trip-nav-h) + var(--trip-nav-bottom) + env(safe-area-inset-bottom) + 18px);
+  --trip-hero-h: clamp(124px, 22dvh, 156px);
+  --trip-rec-photo-h: clamp(78px, 15dvh, 104px);
+  --trip-rec-body-h: clamp(58px, 10dvh, 72px);
+}
+@media (min-width: 600px) {
+  body.trip-overview-mode {
+    --trip-home-w: min(760px, calc(100vw - 48px));
+    --trip-hero-h: clamp(148px, 20vw, 190px);
+    --trip-rec-photo-h: clamp(96px, 12vw, 132px);
+    --trip-rec-body-h: clamp(68px, 7vw, 82px);
+  }
+  body.trip-overview-mode .trip-home,
+  body.trip-overview-mode.trip-home-locked .trip-home {
+    padding-top: 16px !important;
+  }
+  body.trip-overview-mode .recommend-section,
+  body.trip-overview-mode.trip-home-locked .recommend-section {
+    margin-top: 26px !important;
+  }
+  body.trip-overview-mode .map-section,
+  body.trip-overview-mode.trip-home-locked .map-section {
+    margin-top: 24px !important;
+  }
+  body.trip-overview-mode .trip-map-card,
+  body.trip-overview-mode.trip-home-locked .trip-map-card {
+    max-height: 236px !important;
+  }
+}
+body.trip-overview-mode #sheet,
+body.trip-overview-mode #sheet-content {
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden !important;
+}
+body.trip-overview-mode #chat-panel.trip-home-panel {
+  height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 0 var(--trip-home-bottom-reserve) !important;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+body.trip-overview-mode #chat-panel.trip-home-panel::-webkit-scrollbar {
+  display: none;
+}
+body.trip-overview-mode.trip-home-locked #chat-panel.trip-home-panel {
+  position: relative !important;
+}
+body.trip-overview-mode .trip-home,
+body.trip-overview-mode.trip-home-locked .trip-home {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  width: var(--trip-home-w) !important;
+  min-width: 0 !important;
+  max-width: var(--trip-home-w) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+  padding: 8px 0 0 !important;
+  transform: none !important;
+  transform-origin: center top !important;
+  container-type: inline-size !important;
+}
+body.trip-overview-mode .trip-hero-card,
+body.trip-overview-mode.trip-home-locked .trip-hero-card {
+  width: calc(100% - (var(--trip-home-pad-x) * 2)) !important;
+  height: var(--trip-hero-h) !important;
+  min-height: var(--trip-hero-h) !important;
+  max-height: var(--trip-hero-h) !important;
+  margin: 0 var(--trip-home-pad-x) !important;
+  border-radius: 12px !important;
+  aspect-ratio: auto !important;
+}
+body.trip-overview-mode .trip-hero-card.no-itinerary .trip-hero-copy,
+body.trip-overview-mode .trip-hero-copy,
+body.trip-overview-mode.trip-home-locked .trip-hero-card.no-itinerary .trip-hero-copy,
+body.trip-overview-mode.trip-home-locked .trip-hero-copy {
+  left: clamp(18px, 5cqw, 24px) !important;
+  top: clamp(24px, 7cqw, 34px) !important;
+  max-width: 78% !important;
+}
+body.trip-overview-mode .trip-hero-title,
+body.trip-overview-mode.trip-home-locked .trip-hero-title {
+  font-size: clamp(24px, 7.2cqw, 30px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: 0 !important;
+}
+body.trip-overview-mode .recommend-section,
+body.trip-overview-mode.trip-home-locked .recommend-section {
+  margin: clamp(16px, 3.7dvh, 22px) var(--trip-home-pad-x) 0 !important;
+}
+body.trip-overview-mode .trip-section-head,
+body.trip-overview-mode.trip-home-locked .trip-section-head {
+  margin-bottom: 8px !important;
+}
+body.trip-overview-mode .trip-section-title,
+body.trip-overview-mode.trip-home-locked .trip-section-title {
+  font-size: clamp(25px, 7.2cqw, 30px) !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+body.trip-overview-mode .see-more,
+body.trip-overview-mode.trip-home-locked .see-more {
+  font-size: 13px !important;
+}
+body.trip-overview-mode .trip-tabs,
+body.trip-overview-mode.trip-home-locked .trip-tabs {
+  gap: clamp(18px, 5cqw, 24px) !important;
+  margin-bottom: 10px !important;
+}
+body.trip-overview-mode .trip-tab,
+body.trip-overview-mode.trip-home-locked .trip-tab {
+  font-size: 13px !important;
+  padding-bottom: 7px !important;
+}
+body.trip-overview-mode .recommend-grid,
+body.trip-overview-mode.trip-home-locked .recommend-grid {
+  gap: 10px !important;
+}
+body.trip-overview-mode .recommend-card,
+body.trip-overview-mode.trip-home-locked .recommend-card {
+  height: calc(var(--trip-rec-photo-h) + var(--trip-rec-body-h)) !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  grid-template-rows: var(--trip-rec-photo-h) var(--trip-rec-body-h) !important;
+  border-radius: 9px !important;
+  box-shadow: 0 8px 18px rgba(24,30,20,0.07) !important;
+}
+body.trip-overview-mode .recommend-photo,
+body.trip-overview-mode.trip-home-locked .recommend-photo {
+  height: var(--trip-rec-photo-h) !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+}
+body.trip-overview-mode .recommend-body,
+body.trip-overview-mode.trip-home-locked .recommend-body {
+  height: var(--trip-rec-body-h) !important;
+  padding: 8px 8px 7px !important;
+}
+body.trip-overview-mode .recommend-title,
+body.trip-overview-mode.trip-home-locked .recommend-title {
+  font-size: clamp(16px, 4.8cqw, 19px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: 0 !important;
+  margin-bottom: 4px !important;
+}
+body.trip-overview-mode .recommend-sub,
+body.trip-overview-mode.trip-home-locked .recommend-sub {
+  font-size: clamp(9px, 2.8cqw, 11px) !important;
+  line-height: 1.16 !important;
+  margin-bottom: 6px !important;
+}
+body.trip-overview-mode .tag-row,
+body.trip-overview-mode.trip-home-locked .tag-row {
+  gap: 5px !important;
+}
+body.trip-overview-mode .tag-row span,
+body.trip-overview-mode.trip-home-locked .tag-row span {
+  font-size: 9px !important;
+  padding: 3px 6px !important;
+}
+body.trip-overview-mode .map-section,
+body.trip-overview-mode.trip-home-locked .map-section {
+  margin: clamp(16px, 3.5dvh, 22px) var(--trip-home-pad-x) 0 !important;
+}
+body.trip-overview-mode .trip-map-card,
+body.trip-overview-mode.trip-home-locked .trip-map-card {
+  height: var(--trip-home-map-height, clamp(112px, 20dvh, 168px)) !important;
+  min-height: 72px !important;
+  max-height: 168px !important;
+  margin-top: 8px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 16px rgba(35,42,20,0.07) !important;
+}
+@media (max-height: 680px) {
+  body.trip-overview-mode {
+    --trip-hero-h: clamp(108px, 20dvh, 132px);
+    --trip-rec-photo-h: clamp(62px, 13dvh, 86px);
+    --trip-rec-body-h: 56px;
+  }
+  body.trip-overview-mode .recommend-section,
+  body.trip-overview-mode.trip-home-locked .recommend-section,
+  body.trip-overview-mode .map-section,
+  body.trip-overview-mode.trip-home-locked .map-section {
+    margin-top: 12px !important;
+  }
+}
+
+/* Phone-app frame: keep the mobile product width when opened in a desktop browser. */
+@media (min-width: 431px) {
+  body.trip-overview-mode {
+    --trip-home-w: 430px;
+    --trip-nav-w: 413px;
+    --trip-shell-h: min(100dvh, 932px);
+    --trip-shell-offset-y: 0px;
+    --trip-home-pad-x: 10px;
+    --trip-hero-h: 156px;
+    --trip-rec-photo-h: 104px;
+    --trip-rec-body-h: 72px;
+    background: #dfe7df !important;
+  }
+  body.trip-overview-mode #sheet {
+    inset: var(--trip-shell-offset-y, 0px) auto auto 50% !important;
+    width: 430px !important;
+    max-width: 430px !important;
+    height: var(--trip-shell-h, 100dvh) !important;
+    transform: translateX(-50%) !important;
+    overflow: hidden !important;
+    box-shadow: 0 0 0 1px rgba(34, 49, 38, 0.08), 0 18px 60px rgba(28, 42, 32, 0.18) !important;
+  }
+  body.trip-overview-mode #sheet-content,
+  body.trip-overview-mode #planner-panel {
+    height: var(--trip-shell-h, 100dvh) !important;
+  }
+  body.trip-overview-mode #chat-panel.trip-home-panel {
+    height: var(--trip-shell-h, 100dvh) !important;
+  }
+  body.trip-overview-mode #sheet-content,
+  body.trip-overview-mode #chat-panel.trip-home-panel {
+    width: 100% !important;
+    max-width: 430px !important;
+  }
+  body.trip-overview-mode .trip-home,
+  body.trip-overview-mode.trip-home-locked .trip-home {
+    width: 430px !important;
+    max-width: 430px !important;
+    padding-top: 8px !important;
+  }
+  body.trip-overview-mode .recommend-section,
+  body.trip-overview-mode.trip-home-locked .recommend-section {
+    margin-top: 18px !important;
+  }
+  body.trip-overview-mode .map-section,
+  body.trip-overview-mode.trip-home-locked .map-section {
+    margin-top: 16px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  body.trip-overview-mode #sheet {
+    width: 100% !important;
+    max-width: 100vw !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Desktop browser preview: even in a narrow browser pane, keep it as a phone app. */
+body.trip-overview-mode.trip-desktop-preview {
+    --trip-preview-w: min(390px, calc(100vw - 32px));
+    --trip-shell-h: min(calc(100dvh - 32px), 844px);
+    --trip-shell-offset-y: max(16px, calc((100dvh - var(--trip-shell-h)) / 2));
+    --trip-home-w: var(--trip-preview-w);
+    --trip-nav-w: calc(var(--trip-preview-w) - 20px);
+    --trip-home-pad-x: 10px;
+    --trip-hero-h: 142px;
+    --trip-rec-photo-h: 92px;
+    --trip-rec-body-h: 64px;
+    background: #dfe7df !important;
+}
+body.trip-overview-mode.trip-desktop-preview #sheet {
+    inset: var(--trip-shell-offset-y, 16px) auto auto 50% !important;
+    width: var(--trip-preview-w) !important;
+    max-width: var(--trip-preview-w) !important;
+    height: var(--trip-shell-h) !important;
+    transform: translateX(-50%) !important;
+    overflow: hidden !important;
+    box-shadow: 0 0 0 1px rgba(34, 49, 38, 0.08), 0 18px 60px rgba(28, 42, 32, 0.18) !important;
+}
+body.trip-overview-mode.trip-desktop-preview #sheet-content,
+body.trip-overview-mode.trip-desktop-preview #chat-panel.trip-home-panel,
+body.trip-overview-mode.trip-desktop-preview #planner-panel {
+    width: 100% !important;
+    max-width: var(--trip-preview-w) !important;
+    height: var(--trip-shell-h) !important;
+}
+body.trip-overview-mode.trip-desktop-preview .trip-home,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .trip-home {
+    width: var(--trip-preview-w) !important;
+    max-width: var(--trip-preview-w) !important;
+    padding-top: 8px !important;
+}
+body.trip-overview-mode.trip-desktop-preview .trip-hero-card,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .trip-hero-card {
+  width: calc(100% - (var(--trip-home-pad-x) * 2)) !important;
+  flex-basis: calc(100% - (var(--trip-home-pad-x) * 2)) !important;
+  margin-left: var(--trip-home-pad-x) !important;
+  margin-right: var(--trip-home-pad-x) !important;
+}
+body.trip-overview-mode.trip-desktop-preview .trip-hero-title,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .trip-hero-title {
+  font-size: 21px !important;
+  line-height: 1.04 !important;
+  font-weight: 760 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .trip-section-title,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .trip-section-title {
+  font-size: 20px !important;
+  line-height: 1.04 !important;
+  font-weight: 760 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .see-more,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .see-more {
+  font-size: 12px !important;
+  font-weight: 760 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .trip-tab,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .trip-tab {
+  font-size: 12px !important;
+  font-weight: 780 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .recommend-title,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .recommend-title {
+  font-size: 14px !important;
+  line-height: 1.12 !important;
+  font-weight: 760 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .recommend-sub,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .recommend-sub {
+  font-size: 9.5px !important;
+  line-height: 1.18 !important;
+  font-weight: 650 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .tag-row span,
+body.trip-overview-mode.trip-desktop-preview.trip-home-locked .tag-row span {
+  font-size: 8.5px !important;
+  font-weight: 700 !important;
+  padding: 3px 5px !important;
+}
+body.trip-overview-mode.trip-desktop-preview.trip-home-map-tight .home-route-bubble:not(.center) {
+  display: flex !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-bubble {
+  min-width: 46px !important;
+  max-width: 84px !important;
+  height: 24px !important;
+  padding: 0 6px !important;
+  gap: 4px !important;
+  border-radius: 9px !important;
+  font-size: 10px !important;
+  font-weight: 760 !important;
+  box-shadow: 0 7px 14px rgba(53,72,89,0.10) !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-bubble::after {
+  width: 10px !important;
+  height: 10px !important;
+  bottom: -5px !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-bubble.center {
+  top: 28% !important;
+  min-width: min(150px, 48%) !important;
+  height: 38px !important;
+  grid-template-columns: 22px minmax(0, 1fr) !important;
+  gap: 1px 6px !important;
+  padding: 0 10px !important;
+}
+body.trip-overview-mode.trip-desktop-preview.trip-home-map-tight .home-route-bubble.center {
+  top: 24% !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-bubble.left-top {
+  left: 12% !important;
+  top: 20% !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-bubble.right-top {
+  right: 9% !important;
+  top: 20% !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-bubble.left-bottom {
+  left: 7% !important;
+  top: 49% !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-bubble.right-bottom {
+  right: 6% !important;
+  top: 49% !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-icon {
+  width: 15px !important;
+  height: 15px !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-icon svg {
+  width: 10px !important;
+  height: 10px !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-main-title {
+  font-size: 11.5px !important;
+  font-weight: 760 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-main-sub {
+  font-size: 8.5px !important;
+  font-weight: 650 !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-cta {
+  width: min(176px, 50%) !important;
+  min-height: 32px !important;
+  bottom: 8px !important;
+}
+body.trip-overview-mode.trip-desktop-preview.trip-home-map-tight .home-route-cta {
+  bottom: 5px !important;
+}
+body.trip-overview-mode.trip-desktop-preview .home-route-cta strong {
+  font-size: 13px !important;
+  font-weight: 760 !important;
+}
+body.trip-overview-mode .trip-hero-carousel.is-single > .trip-hero-card,
+body.trip-overview-mode.trip-home-locked .trip-hero-carousel.is-single > .trip-hero-card {
+  width: calc(100% - (var(--trip-home-pad-x) * 2)) !important;
+  flex-basis: calc(100% - (var(--trip-home-pad-x) * 2)) !important;
+  margin-left: var(--trip-home-pad-x) !important;
+  margin-right: var(--trip-home-pad-x) !important;
+}
+body.trip-overview-mode[data-active-tab="planner"] .planner-local-input {
+  bottom: calc(env(safe-area-inset-bottom) + 28px) !important;
+  left: 30px !important;
+  right: 30px !important;
+  min-height: 38px !important;
+  grid-template-columns: 24px minmax(0, 1fr) auto !important;
+  gap: 5px !important;
+  padding: 0 10px 0 11px !important;
+  z-index: 1250;
+}
+body.trip-overview-mode:not(.trip-desktop-preview)[data-active-tab="planner"] {
+  --planner-nav-reserve: var(--trip-nav-h, 56px);
+}
+body.trip-overview-mode[data-active-tab="planner"] .planner-local-input .planner-icon-btn {
+  width: 24px !important;
+  height: 24px !important;
+}
+body.trip-overview-mode[data-active-tab="planner"] .planner-local-input svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+body.trip-overview-mode[data-active-tab="planner"] #planner-query-input {
+  font-size: 13px !important;
+  font-weight: 650 !important;
+}
+body.trip-overview-mode[data-active-tab="planner"] #planner-results {
+  bottom: calc(env(safe-area-inset-bottom) + 78px) !important;
+}
 </style>
 </head>
 <body class="trip-overview-mode">
@@ -7207,7 +7791,7 @@ body.trip-overview-mode.trip-home-locked .trip-fab b {
             <button class="trip-tab" type="button" role="tab" aria-selected="false" onclick="switchHomeRecommendation(this)">景点</button>
           </div>
           <div id="home-recommend-grid" class="recommend-grid">
-            <article class="recommend-card" onclick="showToast('顺德特色火锅')" tabindex="0" aria-label="顺德特色火锅">
+            <article class="recommend-card" onclick="openHomeStaticRecommendation(this, 'food', 0)" tabindex="0" aria-label="顺德特色火锅">
               <div class="recommend-photo">
                 <img src="assets/recommendations/chengdu-jinli.jpg" alt="顺德特色火锅">
               </div>
@@ -7217,7 +7801,7 @@ body.trip-overview-mode.trip-home-locked .trip-fab b {
                 <div class="tag-row"><span>地方菜</span><span>晚餐或夜间</span></div>
               </div>
             </article>
-            <article class="recommend-card" onclick="showToast('顺德传统面点')" tabindex="0" aria-label="顺德传统面点">
+            <article class="recommend-card" onclick="openHomeStaticRecommendation(this, 'food', 1)" tabindex="0" aria-label="顺德传统面点">
               <div class="recommend-photo">
                 <img src="assets/recommendations/xian-muslim-food-street.jpg" alt="顺德传统面点">
               </div>
@@ -9023,6 +9607,9 @@ function syncLockedTripHomeLayout() {
   const body = document.body;
   if (!body?.classList.contains('trip-overview-mode')) {
     body?.classList.remove('trip-shell-locked', 'trip-home-locked');
+    body?.classList.remove('trip-desktop-preview');
+    body?.style.removeProperty('--trip-home-map-height');
+    body?.classList.remove('trip-home-map-tight');
     return;
   }
   const clearHomeLockVars = () => {
@@ -9031,44 +9618,66 @@ function syncLockedTripHomeLayout() {
     body.style.removeProperty('--trip-home-map-shift');
     body.style.removeProperty('--trip-home-map-stretch');
   };
+  const screenShortSide = Math.min(window.screen?.width || window.innerWidth || 0, window.screen?.height || window.innerHeight || 0);
+  const isDesktopPreview = window.innerWidth > 430 || screenShortSide > 480;
+  body.classList.toggle('trip-desktop-preview', isDesktopPreview);
+  if (window.innerWidth > 430 || isDesktopPreview) {
+    const maxShellHeight = isDesktopPreview ? 844 : 932;
+    const minEdgeGap = isDesktopPreview ? 32 : 0;
+    const shellHeight = Math.min(Math.max((window.innerHeight || 0) - minEdgeGap, 0), maxShellHeight);
+    const shellOffset = Math.max(0, Math.floor(((window.innerHeight || shellHeight) - shellHeight) / 2));
+    body.style.setProperty('--trip-shell-h', `${shellHeight}px`);
+    body.style.setProperty('--trip-shell-offset-y', `${shellOffset}px`);
+  } else {
+    body.style.removeProperty('--trip-shell-h');
+    body.style.removeProperty('--trip-shell-offset-y');
+  }
+  const syncHomeMapHeight = () => {
+    const activeTab = body.dataset.activeTab || currentTab || 'chat';
+    if (activeTab !== 'chat') {
+      body.style.removeProperty('--trip-home-map-height');
+      body.classList.remove('trip-home-map-tight');
+      return;
+    }
+    const mapCard = document.getElementById('home-trip-map-card');
+    const mapSection = mapCard?.closest?.('.map-section');
+    const navWrap = document.getElementById('ai-input-wrap');
+    if (!mapCard || !navWrap) return;
+    const mapRect = mapCard.getBoundingClientRect();
+    const navRect = navWrap.getBoundingClientRect();
+    if (!mapRect.height || !navRect.height) return;
+    const mapComputedHeight = parseFloat(getComputedStyle(mapCard).height) || mapRect.height;
+    const scale = Math.max(mapRect.height / mapComputedHeight, 0.01);
+    const unshiftedMapTop = mapRect.top;
+    const desiredGap = 14;
+    const minHeight = 72;
+    const maxHeight = 168;
+    const targetShift = 0;
+    const availableHeight = Math.floor((navRect.top - desiredGap - unshiftedMapTop) / scale);
+    const nextHeight = Math.max(minHeight, Math.min(maxHeight, availableHeight));
+    body.classList.toggle('trip-home-map-tight', nextHeight < 118);
+    body.style.setProperty('--trip-home-map-shift', '0px');
+    body.style.setProperty('--trip-home-map-height', `${nextHeight}px`);
+    mapSection?.style?.setProperty?.('--trip-home-map-height', `${nextHeight}px`);
+  };
   const activeTab = body.dataset.activeTab || currentTab || 'chat';
-  const viewport = window.visualViewport;
-  const viewportWidth = Math.max(
-    320,
-    Math.round(Math.max(viewport?.width || 0, window.innerWidth || 0, document.documentElement?.clientWidth || 0, 413))
-  );
-  const useResponsiveHome = activeTab === 'chat' && viewportWidth <= 430;
-  const shouldLockHome = activeTab === 'chat' && !useResponsiveHome;
+  const isHome = activeTab === 'chat';
 
-  body.classList.toggle('trip-shell-locked', !useResponsiveHome);
-  body.classList.toggle('trip-home-locked', shouldLockHome);
-  if (useResponsiveHome) {
+  body.classList.add('trip-shell-locked');
+  body.classList.remove('trip-home-locked');
+  if (!isHome) {
     clearHomeLockVars();
+    body.style.removeProperty('--trip-home-map-height');
+    body.classList.remove('trip-home-map-tight');
     return;
   }
-  if (!shouldLockHome) return;
 
-  const refWidth = 413;
-  const refHeight = 744;
-  const viewportHeight = Math.max(
-    568,
-    Math.round(Math.max(viewport?.height || 0, window.innerHeight || 0, document.documentElement?.clientHeight || 0, refHeight))
-  );
-  const scale = Math.min(1, viewportWidth / refWidth, viewportHeight / refHeight);
-  const remainingHeight = viewportHeight - (refHeight * scale);
-  const stageTop = remainingHeight > 0 ? Math.min(16, Math.round(remainingHeight * 0.12)) : 0;
-  const navHeight = 56 * scale;
-  const navBottom = 18;
-  const navTop = viewportHeight - navBottom - navHeight;
-  const mapCardTop = stageTop + (490 * scale);
-  const desiredGap = Math.max(14, 16 * scale);
-  const targetHeight = Math.max(172, Math.round((navTop - desiredGap - mapCardTop) / Math.max(scale, 0.01)));
-  const mapStretch = Math.max(0, Math.min(180, targetHeight - 172));
-
-  body.style.setProperty('--trip-home-scale', scale.toFixed(6));
-  body.style.setProperty('--trip-home-stage-top', `${stageTop}px`);
+  body.style.setProperty('--trip-home-scale', '1');
+  body.style.setProperty('--trip-home-stage-top', '0px');
   body.style.setProperty('--trip-home-map-shift', '0px');
-  body.style.setProperty('--trip-home-map-stretch', `${mapStretch}px`);
+  body.style.setProperty('--trip-home-map-stretch', '0px');
+  syncHomeMapHeight();
+  requestAnimationFrame(syncHomeMapHeight);
 }
 
 function bindLockedTripHomeLayout() {
@@ -12270,6 +12879,9 @@ function switchTab(tab) {
       }
     }, 80);
   }
+  syncLockedTripHomeLayout();
+  requestAnimationFrame(syncLockedTripHomeLayout);
+  setTimeout(syncLockedTripHomeLayout, 80);
 }
 
 function isPlannerResponseActive() {
@@ -19503,6 +20115,7 @@ function homeCardFromSpot(city, category, spot, index = 0, usedImages = null) {
     name,
     desc,
     img: rawImg,
+    homeImageIndex: index,
     tags: homeCardTags(spot, category),
     hotScore,
     rating,
@@ -19746,6 +20359,8 @@ function renderHomeRecommendations() {
     const rawImg = String(card.img || '');
     const primarySrc = localSrc || (/^assets\//i.test(rawImg) && !isPlaceholderPhotoUrl(rawImg) ? rawImg : homeFallbackImage(card.city, card.category, index));
     const fallbackSrc = localHomeRecommendationImage(card.city, card.category, index + 4) || homeFallbackImage(card.city, card.category, index + 4);
+    card.displayImg = primarySrc;
+    card.fallbackImg = fallbackSrc;
     return `
       <article class="recommend-card" onclick="openHomeRecommendation('${card.id}')" tabindex="0" aria-label="${escapeHTML(card.name)}">
         <div class="recommend-photo">
@@ -19766,6 +20381,32 @@ function renderHomeRecommendations() {
 function openHomeRecommendation(id) {
   const card = window.__HOME_RECOMMENDATIONS?.[id];
   if (!card) return;
+  openHomeRecommendationSheet(card);
+}
+
+function openHomeStaticRecommendation(cardEl, category = 'food', index = 0) {
+  const el = cardEl?.closest?.('.recommend-card') || cardEl;
+  if (!el) return;
+  const name = el.querySelector('.recommend-title')?.textContent?.trim() || el.getAttribute('aria-label') || '推荐地点';
+  const desc = el.querySelector('.recommend-sub')?.textContent?.trim() || (category === 'food' ? '实时热门美食' : '实时热门景点');
+  const img = el.querySelector('img')?.getAttribute('src') || localHomeRecommendationImage(homeRecommendationCity(), category, index);
+  const tags = [...el.querySelectorAll('.tag-row span')].map(item => item.textContent.trim()).filter(Boolean);
+  const city = homeRecommendationCity();
+  const id = `home_static_${stableHash(`${city}_${category}_${name}_${index}`)}`;
+  const card = {
+    id,
+    city,
+    category,
+    name,
+    desc,
+    img,
+    displayImg: img,
+    fallbackImg: localHomeRecommendationImage(city, category, index + 4) || homeFallbackImage(city, category, index + 4),
+    homeImageIndex: index,
+    tags: tags.length ? tags : homeCardTags({ desc, tag: category === 'food' ? '美食' : '景点' }, category),
+  };
+  window.__HOME_RECOMMENDATIONS = window.__HOME_RECOMMENDATIONS || {};
+  window.__HOME_RECOMMENDATIONS[id] = card;
   openHomeRecommendationSheet(card);
 }
 
@@ -19898,6 +20539,14 @@ function curatedHomeGalleryUrls(card) {
 
 function homeAlbumPhotoSources(card) {
   const photos = [];
+  const baseIndex = Number.isFinite(Number(card?.homeImageIndex)) ? Number(card.homeImageIndex) : 0;
+  photos.push(
+    card?.displayImg,
+    localHomeRecommendationImage(card?.city, card?.category, baseIndex),
+    card?.fallbackImg,
+    localHomeRecommendationImage(card?.city, card?.category, baseIndex + 4),
+    homeFallbackImage(card?.city, card?.category, baseIndex)
+  );
   const cats = Array.isArray(card?.photoCats) ? card.photoCats : [];
   cats.forEach(cat => (cat?.photos || []).forEach(photo => photos.push(photo?.url || photo)));
   if (Array.isArray(card?.photos)) photos.push(...card.photos.map(photo => photo?.url || photo));
@@ -19917,6 +20566,7 @@ function homeSheetAlbumId(card) {
 function homeSheetAlbumHTML(card, photos = [], loading = false) {
   const albumId = homeSheetAlbumId(card);
   const name = card?.name || '地点';
+  const baseIndex = Number.isFinite(Number(card?.homeImageIndex)) ? Number(card.homeImageIndex) : 0;
   if (loading && !photos.length) {
     return `
       <div id="${escapeHTML(albumId)}" class="home-sheet-album" data-card-id="${escapeHTML(card.id)}">
@@ -19935,7 +20585,8 @@ function homeSheetAlbumHTML(card, photos = [], loading = false) {
         ${photos.map((url, index) => `
           <div class="home-sheet-photo">
             <img src="${escapeHTML(url)}" alt="${escapeHTML(`${name}实景图 ${index + 1}`)}" loading="${index ? 'lazy' : 'eager'}"
-              onerror="removeHomeSheetPhoto(this)">
+              data-fallback-src="${escapeHTML(localHomeRecommendationImage(card?.city, card?.category, baseIndex + index + 1) || homeFallbackImage(card?.city, card?.category, baseIndex + index + 1))}"
+              onerror="handleHomeSheetPhotoError(this)">
           </div>`).join('')}
       </div>
       ${photos.length > 1 ? `<div class="home-sheet-album-dots">${photos.map((_, index) => `<span class="${index ? '' : 'is-active'}"></span>`).join('')}</div>` : ''}
@@ -19970,6 +20621,18 @@ function removeHomeSheetPhoto(img) {
   const album = img?.closest?.('.home-sheet-album');
   img?.closest?.('.home-sheet-photo')?.remove();
   refreshHomeSheetAlbumDots(album);
+}
+
+function handleHomeSheetPhotoError(img) {
+  if (!img) return;
+  const failedSrc = img.currentSrc || img.src || '';
+  const fallback = img.dataset.fallbackSrc || '';
+  if (fallback && fallback !== failedSrc && img.dataset.fallbackApplied !== 'true') {
+    img.dataset.fallbackApplied = 'true';
+    img.src = fallback;
+    return;
+  }
+  removeHomeSheetPhoto(img);
 }
 
 function startHomeSheetAlbumDrag(event, scroller) {
