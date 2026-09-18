@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AI旅行助手 · 智能旅行伴侣</title>
+<script>
+  (function () {
+    var ua = navigator.userAgent || '';
+    var isMobileWebview = /Android|iPhone|iPad|iPod|Windows Phone|Mobile|MicroMessenger/i.test(ua);
+    if (isMobileWebview) document.documentElement.classList.add('trip-mobile-device-root');
+  })();
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -7728,6 +7735,186 @@ body.trip-overview-mode[data-active-tab="planner"] #planner-query-input {
 body.trip-overview-mode[data-active-tab="planner"] #planner-results {
   bottom: calc(env(safe-area-inset-bottom) + 78px) !important;
 }
+
+/* Actual touch phones should use the full viewport. Keep the phone frame only
+   for desktop browsers so high-density mobile webviews are not boxed in. */
+body.trip-overview-mode.trip-mobile-device {
+  --trip-fixed-w: 100vw;
+  --trip-nav-w: calc(100vw - 20px);
+  --trip-home-w: 100vw;
+  --trip-home-pad-x: 10px;
+  --trip-canvas-w: 100vw;
+}
+body.trip-overview-mode.trip-mobile-device #sheet,
+body.trip-overview-mode.trip-mobile-device #sheet-content,
+body.trip-overview-mode.trip-mobile-device #chat-panel.trip-home-panel,
+body.trip-overview-mode.trip-mobile-device #planner-panel {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-width: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+body.trip-overview-mode.trip-mobile-device #sheet {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+body.trip-overview-mode.trip-mobile-device #chat-panel.trip-home-panel {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  padding-bottom: var(--trip-home-bottom-reserve) !important;
+}
+body.trip-overview-mode.trip-mobile-device .trip-home,
+body.trip-overview-mode.trip-mobile-device.trip-home-locked .trip-home {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+}
+body.trip-overview-mode.trip-mobile-device .trip-hero-card,
+body.trip-overview-mode.trip-mobile-device .recommend-section,
+body.trip-overview-mode.trip-mobile-device .map-section {
+  width: calc(100% - 20px) !important;
+  max-width: calc(100vw - 20px) !important;
+  min-width: 0 !important;
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+}
+body.trip-overview-mode.trip-mobile-device .recommend-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+body.trip-overview-mode.trip-mobile-device .recommend-card,
+body.trip-overview-mode.trip-mobile-device .recommend-photo,
+body.trip-overview-mode.trip-mobile-device .recommend-body {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+body.trip-overview-mode.trip-mobile-device .trip-map-card,
+body.trip-overview-mode.trip-mobile-device #home-map-content,
+body.trip-overview-mode.trip-mobile-device .home-map-empty {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+body.trip-overview-mode.trip-mobile-device .trip-map-card {
+  max-height: var(--trip-home-map-height, 360px) !important;
+}
+body.trip-overview-mode.trip-mobile-device #ai-input-wrap {
+  width: calc(100vw - 20px) !important;
+  max-width: calc(100vw - 20px) !important;
+}
+@media (max-width: 430px) {
+  body.trip-overview-mode {
+    --trip-fixed-w: 100vw;
+    --trip-nav-w: calc(100vw - 20px);
+    --trip-home-w: 100vw;
+    --trip-home-pad-x: 10px;
+    --trip-canvas-w: 100vw;
+  }
+  body.trip-overview-mode #sheet,
+  body.trip-overview-mode #sheet-content,
+  body.trip-overview-mode #chat-panel.trip-home-panel,
+  body.trip-overview-mode #planner-panel {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  body.trip-overview-mode .trip-home,
+  body.trip-overview-mode.trip-home-locked .trip-home {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+  }
+  body.trip-overview-mode .trip-hero-card,
+  body.trip-overview-mode .recommend-section,
+  body.trip-overview-mode .map-section {
+    width: calc(100% - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    min-width: 0 !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+  }
+  body.trip-overview-mode .recommend-grid,
+  body.trip-overview-mode .recommend-card,
+  body.trip-overview-mode .recommend-photo,
+  body.trip-overview-mode .recommend-body,
+  body.trip-overview-mode .trip-map-card,
+  body.trip-overview-mode #home-map-content,
+  body.trip-overview-mode .home-map-empty {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  body.trip-overview-mode .recommend-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  body.trip-overview-mode #ai-input-wrap {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+}
+html.trip-mobile-device-root body.trip-overview-mode {
+  --trip-fixed-w: 100vw;
+  --trip-nav-w: calc(100vw - 20px);
+  --trip-home-w: 100vw;
+  --trip-home-pad-x: 10px;
+  --trip-canvas-w: 100vw;
+}
+html.trip-mobile-device-root body.trip-overview-mode #sheet,
+html.trip-mobile-device-root body.trip-overview-mode #sheet-content,
+html.trip-mobile-device-root body.trip-overview-mode #chat-panel.trip-home-panel,
+html.trip-mobile-device-root body.trip-overview-mode #planner-panel {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-width: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+html.trip-mobile-device-root body.trip-overview-mode .trip-home,
+html.trip-mobile-device-root body.trip-overview-mode.trip-home-locked .trip-home {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+}
+html.trip-mobile-device-root body.trip-overview-mode .trip-hero-card,
+html.trip-mobile-device-root body.trip-overview-mode .recommend-section,
+html.trip-mobile-device-root body.trip-overview-mode .map-section {
+  width: calc(100% - 20px) !important;
+  max-width: calc(100vw - 20px) !important;
+  min-width: 0 !important;
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+}
+html.trip-mobile-device-root body.trip-overview-mode .recommend-grid,
+html.trip-mobile-device-root body.trip-overview-mode .recommend-card,
+html.trip-mobile-device-root body.trip-overview-mode .recommend-photo,
+html.trip-mobile-device-root body.trip-overview-mode .recommend-body,
+html.trip-mobile-device-root body.trip-overview-mode .trip-map-card,
+html.trip-mobile-device-root body.trip-overview-mode #home-map-content,
+html.trip-mobile-device-root body.trip-overview-mode .home-map-empty {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+html.trip-mobile-device-root body.trip-overview-mode .recommend-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+html.trip-mobile-device-root body.trip-overview-mode #ai-input-wrap {
+  width: calc(100vw - 20px) !important;
+  max-width: calc(100vw - 20px) !important;
+}
 </style>
 </head>
 <body class="trip-overview-mode">
@@ -9619,7 +9806,12 @@ function syncLockedTripHomeLayout() {
     body.style.removeProperty('--trip-home-map-stretch');
   };
   const screenShortSide = Math.min(window.screen?.width || window.innerWidth || 0, window.screen?.height || window.innerHeight || 0);
-  const isDesktopPreview = window.innerWidth > 430 || screenShortSide > 480;
+  const isTouchDevice = window.matchMedia?.('(pointer: coarse)').matches
+    || Number(navigator.maxTouchPoints || 0) > 0
+    || /Android|iPhone|iPad|iPod|Windows Phone|Mobile/i.test(navigator.userAgent || '');
+  const isDesktopPreview = !isTouchDevice && (window.innerWidth > 430 || screenShortSide > 480);
+  document.documentElement.classList.toggle('trip-mobile-device-root', isTouchDevice);
+  body.classList.toggle('trip-mobile-device', isTouchDevice);
   body.classList.toggle('trip-desktop-preview', isDesktopPreview);
   if (window.innerWidth > 430 || isDesktopPreview) {
     const maxShellHeight = isDesktopPreview ? 844 : 932;
@@ -9650,8 +9842,8 @@ function syncLockedTripHomeLayout() {
     const scale = Math.max(mapRect.height / mapComputedHeight, 0.01);
     const unshiftedMapTop = mapRect.top;
     const desiredGap = 14;
-    const minHeight = 72;
-    const maxHeight = 168;
+    const minHeight = isDesktopPreview ? 72 : 120;
+    const maxHeight = isDesktopPreview ? 168 : 360;
     const targetShift = 0;
     const availableHeight = Math.floor((navRect.top - desiredGap - unshiftedMapTop) / scale);
     const nextHeight = Math.max(minHeight, Math.min(maxHeight, availableHeight));
