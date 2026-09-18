@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AI Wanderer · 智能旅行伴侣</title>
+<title>AI旅行助手 · 智能旅行伴侣</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -10933,7 +10933,7 @@ async function generateCustomizedItinerary({ city, days, intent, selectedSpotIds
   try {
     data = await fetchSpotCustomizedItinerary({ city, days, selectedSpotIds, intent });
   } catch (error) {
-    console.warn('[AI Wanderer] spot customized itinerary fallback:', error.message);
+    console.warn('[AI旅行助手] spot customized itinerary fallback:', error.message);
     data = buildFallbackRouteData(city, days, selectedSpotIds, intent);
   }
   data.start_date = data.start_date || intent?.travelDate || intent?.startDate || dateOnlyISO();
@@ -12073,7 +12073,7 @@ async function requestMorphRouteData(cardId) {
     ]);
     data = ensureMorphRouteRichness(resolved, state, 'base');
   } catch (error) {
-    console.warn('[AI Wanderer] morph itinerary fallback:', error.message);
+    console.warn('[AI旅行助手] morph itinerary fallback:', error.message);
     await morphRouteDelay(520);
     data = buildFallbackRouteData(state.city, state.days, state.selectedSpots, state.intent);
   }
@@ -13329,7 +13329,7 @@ function replaceThinkingBubble(html, variant = 'default') {
     el.innerHTML = `
       <div class="bubble-ai-header">
         <div class="bubble-ai-avatar">🗺️</div>
-        <div class="bubble-ai-name">AI Wanderer</div>
+        <div class="bubble-ai-name">AI旅行助手</div>
       </div>
       ${html}`;
     scrollChat();
@@ -13343,7 +13343,7 @@ function addAIBubble(html, variant = 'default') {
   el.innerHTML = `
     <div class="bubble-ai-header">
       <div class="bubble-ai-avatar">🗺️</div>
-      <div class="bubble-ai-name">AI Wanderer</div>
+      <div class="bubble-ai-name">AI旅行助手</div>
     </div>
     ${html}`;
   getResponsePanel().appendChild(el);
@@ -13631,7 +13631,7 @@ function buildNewTrip(city, cityData) {
       fullName: n.name,
       rating: n.rating || null,
       reviewCount: n.reviewCount || null,
-      fullDesc: n.desc + '。这里是 AI Wanderer 推荐的精选打卡地，集自然风光与人文历史于一体，适合自驾深度游览。',
+      fullDesc: n.desc + '。这里是 AI旅行助手 推荐的精选打卡地，集自然风光与人文历史于一体，适合自驾深度游览。',
       photoCats: [{ label:'全部', photos:[
         { url: img, caption:`${n.name} · 真实图片待同步` },
       ]}],
@@ -15820,7 +15820,7 @@ async function hydratePlanRouteData(plan, intent = null) {
     window.__ROUTE_DATA_CACHE[cacheKey] = data;
     return data;
   } catch (error) {
-    console.warn('[AI Wanderer] fetchAIItinerary fallback:', error.message);
+    console.warn('[AI旅行助手] fetchAIItinerary fallback:', error.message);
     plan.routeData = null;
     return null;
   }
@@ -16258,7 +16258,7 @@ function enrichPlanNode(n, idx, city) {
     fullName: n.name,
     rating: n.rating || null,
     reviewCount: n.reviewCount || null,
-    fullDesc: n.desc + '。这里是 AI Wanderer 推荐的精选打卡地，集自然风光与人文历史于一体，适合深度游览。',
+    fullDesc: n.desc + '。这里是 AI旅行助手 推荐的精选打卡地，集自然风光与人文历史于一体，适合深度游览。',
     photoCats: [{ label:'全部', photos }],
     infoList:[
       { icon:'📍', label:'地址', value:n.name, sub:`${city}推荐打卡地` },
@@ -21435,7 +21435,7 @@ function generateSharePoster() {
     <div id="poster">
       <div class="p-emoji">🗺️</div>
       <div class="p-title">${title}</div>
-      <div class="p-sub">AI Wanderer · 问一问 为你定制</div>
+      <div class="p-sub">AI旅行助手 · 问一问 为你定制</div>
       ${daysHTML}
       <div class="p-foot">共 ${stops.length} 个打卡点 · 扫码查看完整行程</div>
       <div class="p-qr">▦</div>
